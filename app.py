@@ -95,3 +95,13 @@ def workouts():
     trainers = Trainer.query.all()
     workout_types = WorkoutType.query.all()
     return render_template('workouts.html', workouts=workouts, trainers=trainers, workout_types=workout_types)
+
+@app.route('/gym/<int:gym_id>', methods=['GET'])
+def gym_detail(gym_id):
+    # Retrieve the gym details based on the gym_id
+    gym = next((g for g in gyms if g.id == gym_id), None)
+    if gym:
+        return render_template('gym_detail.html', gym=gym)
+    else:
+        return redirect(url_for('workouts'))
+
