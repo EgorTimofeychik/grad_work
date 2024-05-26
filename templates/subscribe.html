@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Subscribe</h1>
+
+  <form method="post" action="{{ url_for('subscribe') }}">
+    <div class="form-group">
+      <label for="gym_id">Gym</label>
+      <select class="form-control" id="gym_id" name="gym_id">
+        {% for gym in gyms %}
+          <option value="{{ gym.id }}">{{ gym.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="subscription_type_id">Subscription Type</label>
+      <select class="form-control" id="subscription_type_id" name="subscription_type_id">
+        {% for subscription_type in subscription_types %}
+          <option value="{{ subscription_type.id }}">{{ subscription_type.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Subscribe</button>
+  </form>
+{% endblock %}
