@@ -69,6 +69,10 @@ workouts = [
 def index():
     return render_template('workouts.html', gyms=gyms, subscription_options=subscription_options, current_user=current_user)
 
+@app.route('/workouts')
+def workouts():
+    return render_template('workouts.html', gyms=gyms, subscription_options=subscription_options, current_user=current_user)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -96,10 +100,13 @@ def subscription_checkout():
     # Обработка покупки подписки
     return redirect(url_for('index'))
 
+@app.route('/map')
+def map():
+    return render_template('map.html', gyms=gyms)
+
 @login_manager.user_loader
 def load_user(user_id):
     return users.get(int(user_id))
 
 if __name__ == '__main__':
     app.run(debug=True)
-

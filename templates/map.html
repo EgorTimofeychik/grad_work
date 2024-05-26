@@ -2,45 +2,25 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-12">
-        <h2>Gym Locations</h2>
+    <div class="col-12">
+        <h1>Места тренажерных залов</h1>
         <div id="map" style="height: 500px;"></div>
     </div>
 </div>
 
-{% block scripts %}
-<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}"></script>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
 <script>
-    var map;
-    var markers = [];
+    var map = L.map('map').setView([40.730610, -73.935242], 12);
 
-    function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 12,
-            center: { lat: {{ gym_locations[0].latitude }}, lng: {{ gym_locations[0].longitude }} }
-        });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
 
-        {% for gym in gym_locations %}
-        var marker = new google.maps.Marker({
-            position: { lat: {{ gym.latitude }}, lng: {{ gym.longitude }} },
-            map: map,
-            title: '{{ gym.name }}'
-        });
-
-        markers.push(marker);
-
-        var infowindow = new google.maps.InfoWindow({
-            content: '<h5>{{ gym.name }}</h5><p>{{ gym.address }}</p><a href="{{ url_for("gym_detail", gym_id=gym.id) }}">View Gym</a>'
-        });
-
-        marker.addListener('click', function() {
-            infowindow.open(map, marker);
-        });
-        {% endfor %}
-    }
-
-    initMap();
+    {% for gym in gyms %}
+    L.marker([{{ gym.latitude }}, {{ gym.longitude }}]).addTo(map)
+       .bindPopup('{{ gym.name }}');
+    {% endfor %}
 </script>
 {% endblock %}
-{% endblock %}
-

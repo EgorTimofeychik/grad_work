@@ -6,6 +6,8 @@
     <title>Gym App</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
@@ -23,7 +25,7 @@
                             <a class="nav-link" href="{{ url_for('index') }}">Gyms</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('subscribe') }}">Subscribe</a>
+                            <a class="nav-link" href="{{ url_for('subscription_checkout') }}">Subscribe</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('map') }}">Map</a>
@@ -77,5 +79,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 </body>
 </html>
