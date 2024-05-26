@@ -3,7 +3,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 app.config['SECRET_KEY'] = 'your_secret_key'
 
 # Настройка системы аутентификации
@@ -103,6 +103,19 @@ def subscription_checkout():
 @app.route('/map')
 def map():
     return render_template('map.html', gyms=gyms)
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        # Обработка регистрации
+        username = request.form['username']
+        password = request.form['password']
+        # Создание нового пользователя и добавление его в базу данных
+        new_user = User(len(users) + 1, username, password)
+        users[new_user.id] = new_user
+        flash('You have been registered successfully. Please log in.', 'success')
+        return redirect(url_for('login'))
+    return render_template('register.html')
 
 @login_manager.user_loader
 def load_user(user_id):

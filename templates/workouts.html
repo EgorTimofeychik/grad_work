@@ -49,24 +49,21 @@
 </div>
 
 {% block scripts %}
-<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <script>
-    function initMap() {
-        var map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 12,
-            center: { lat: 40.730610, lng: -73.935242 }
-        });
+  var map = L.map('map').setView([40.730610, -73.935242], 12);
 
-        {% for gym in gyms %}
-        var marker = new google.maps.Marker({
-            position: { lat: {{ gym.latitude }}, lng: {{ gym.longitude }} },
-            map: map,
-            title: '{{ gym.name }}'
-        });
-        {% endfor %}
-    }
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
 
-    initMap();
+  {% for gym in gyms %}
+  console.log('Gym:', '{{ gym.name }}', '{{ gym.latitude }}', '{{ gym.longitude }}');
+  L.marker([{{ gym.latitude }}, {{ gym.longitude }}]).addTo(map)
+    .bindPopup('{{ gym.name }}');
+  {% endfor %}
 </script>
 {% endblock %}
+
 {% endblock %}
