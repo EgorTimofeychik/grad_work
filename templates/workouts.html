@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Workouts</h1>
+
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Gym Locations</h2>
+            <ul>
+                {% for gym in gyms %}
+                <li><a href="{{ url_for('gym_detail', gym_id=gym.id) }}">{{ gym.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="col-md-4">
+            <h2>Subscription Options</h2>
+            <ul>
+                {% for option in subscription_options %}
+                <li>{{ option.name }} - {{ option.price }}</li>
+                {% endfor %}
+            </ul>
+            <a href="{{ url_for('subscription_checkout') }}" class="btn btn-primary">Buy Subscription</a>
+        </div>
+
+        <div class="col-md-4">
+            {% if current_user.is_authenticated %}
+            <h2>Your Workouts</h2>
+            <ul>
+                {% for workout in current_user.workouts %}
+                <li>{{ workout.name }} - {{ workout.date }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <h2>Personal Trainer</h2>
+            <p>Sign in to access your personal trainer and workout schedule.</p>
+            <a href="{{ url_for('login') }}" class="btn btn-primary">Sign In</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Gym Map</h2>
+            <div id="map" style="height: 500px;"></div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}"></script>
+<script>
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 12,
+            center: { lat: 40.730610, lng: -73.935242 }
+        });
+
+        {% for gym in gyms %}
+        var marker = new google.maps.Marker({
+            position: { lat: {{ gym.latitude }}, lng: {{ gym.longitude }} },
+            map: map,
+            title: '{{ gym.name }}'
+        });
+        {% endfor %}
+    }
+
+    initMap();
+</script>
+{% endblock %}
+{% endblock %}

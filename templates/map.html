@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>Gym Locations</h2>
+        <div id="map" style="height: 500px;"></div>
+    </div>
+</div>
+
+{% block scripts %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}"></script>
+<script>
+    var map;
+    var markers = [];
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 12,
+            center: { lat: {{ gym_locations[0].latitude }}, lng: {{ gym_locations[0].longitude }} }
+        });
+
+        {% for gym in gym_locations %}
+        var marker = new google.maps.Marker({
+            position: { lat: {{ gym.latitude }}, lng: {{ gym.longitude }} },
+            map: map,
+            title: '{{ gym.name }}'
+        });
+
+        markers.push(marker);
+
+        var infowindow = new google.maps.InfoWindow({
+            content: '<h5>{{ gym.name }}</h5><p>{{ gym.address }}</p><a href="{{ url_for("gym_detail", gym_id=gym.id) }}">View Gym</a>'
+        });
+
+        marker.addListener('click', function() {
+            infowindow.open(map, marker);
+        });
+        {% endfor %}
+    }
+
+    initMap();
+</script>
+{% endblock %}
+{% endblock %}
+

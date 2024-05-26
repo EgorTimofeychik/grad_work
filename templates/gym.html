@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <h2>{{ gym.name }}</h2>
+        <p>{{ gym.address }}</p>
+        <p>{{ gym.description }}</p>
+        <h3>Subscription Types</h3>
+        <div class="list-group">
+            {% for subscription_type in gym.subscription_types %}
+            <div class="list-group-item">
+                <h5 class="mb-1">{{ subscription_type.name }}</h5>
+                <p class="mb-1">{{ subscription_type.description }}</p>
+                <p class="mb-1">Price: ${{ subscription_type.price }}</p>
+                <form action="{{ url_for('subscribe') }}" method="post">
+                    <input type="hidden" name="gym_id" value="{{ gym.id }}">
+                    <input type="hidden" name="subscription_type_id" value="{{ subscription_type.id }}">
+                    <button type="submit" class="btn btn-primary">Subscribe</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h3>Trainer Services</h3>
+        <div class="list-group">
+            {% for trainer in gym.trainers %}
+            <div class="list-group-item">
+                <h5 class="mb-1">{{ trainer.name }}</h5>
+                <p class="mb-1">{{ trainer.specialization }}</p>
+                <p class="mb-1">Hourly Rate: ${{ trainer.hourly_rate }}</p>
+                <a href="{{ url_for('book_trainer', trainer_id=trainer.id) }}" class="btn btn-primary">Book Trainer</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
