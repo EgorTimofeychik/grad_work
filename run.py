@@ -128,9 +128,14 @@ def register():
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
-       form = LoginForm()
-       return render_template('login.html', form=form)
+        form = LoginForm()
+        if form.validate_on_submit():
+        # Обработка формы логина
+            return redirect(url_for('index'))
+        return render_template('login.html', form=form)
 
+if __name__ == '__main__':
+    app.run(debug=True)
 @login_manager.user_loader
 def load_user(user_id):
     return users.get(int(user_id))
