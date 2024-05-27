@@ -3,6 +3,51 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Gym, SubscriptionType, Trainer, WorkoutType
 from config import Config
+from models import LoginForm
+  # Make sure to import your LoginForm
+
+app = Flask(__name__, template_folder='templates')
+app.config['SECRET_KEY'] = 'your_secret_key'
+gyms = ["Gym A", "Gym B", "Gym C"]
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        if check_credentials(username, password):
+            flash('You have been successfully logged in.', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Invalid username or password', 'danger')
+            return redirect(url_for('login'))
+    return render_template('login.html', form=form)
+
+def check_credentials(username, password):
+    # Реализуйте здесь свою логику проверки учетных данных
+    # Например, сверить с базой данных или другим источником
+    if username == 'admin' and password == 'password':
+        return True
+    else:
+        return False
+
+if __name__ == 'main':
+    app.run(debug=True)
+
+@app.route('/login', methods=['GET', 'POST'])
+def logining():
+    form = LoginForm()
+    if form.validate_on_submit():
+        # Place your authentication logic here
+        # For example:
+        if not check_credentials(form.username.data, form.password.data):
+            flash('Invalid username or password', 'danger')
+            return redirect(url_for('login'))
+        # Assuming authentication is successful:
+        flash('You have been successfully logged in.', 'success')
+        return redirect(url_for('index'))  # Redirect to the index page or dashboard
+    return render_template('login.html', form=form)
 
 # Создание экземпляра Flask
 app = Flask(__name__)
@@ -43,7 +88,7 @@ def map():
 
 # Маршрут страницы авторизации
 @app.route('/login', methods=['GET', 'POST'])
-def login():
+def log():
     if request.method == 'POST':
         user = User.query.filter_by(username=request.form['username']).first()
         if user and check_password_hash(user.password, request.form['password']):

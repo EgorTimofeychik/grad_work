@@ -6,6 +6,7 @@ from datetime import datetime
 app = Flask(__name__, template_folder='templates')
 app.config['SECRET_KEY'] = 'your_secret_key'
 
+
 # Настройка системы аутентификации
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -65,6 +66,13 @@ workouts = [
 ]
 
 # Маршруты
+@app.route('/gym/<int:gym_id>')
+def gym_detail(gym_id):
+    gym = next((g for g in gyms if g.id == gym_id), None)
+    if gym is not None:
+        return render_template('gym_detail.html', gym=gym)
+    else:
+        return "Gym not found", 404
 @app.route('/')
 def index():
     return render_template('workouts.html', gyms=gyms, subscription_options=subscription_options, current_user=current_user)
