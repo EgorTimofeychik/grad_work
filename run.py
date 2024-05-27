@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, flash
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from flask_wtf import FlaskForm
@@ -11,14 +11,28 @@ app.config['SECRET_KEY'] = 'your_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-class User(UserMixin):
+@login_manager.user_loader
+def load_user(user_id):
+    # Ваша логика для поиска пользователя по user_id
+    for user in users.values():
+        if user.id == int(user_id):
+            return user
+    return None
+
+class User:
     def __init__(self, id, username, password):
         self.id = id
         self.username = username
         self.password_hash = generate_password_hash(password)
+        self.is_authenticated = True
+        self.is_active = True
+        self.is_anonymous = False
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def get_id(self):
+        return str(self.id)
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -58,6 +72,7 @@ def gym_detail(gym_id):
 
 @app.route('/')
 @app.route('/workouts')
+@login_required
 def workouts():
     return render_template('workouts.html', gyms=gyms, subscription_options=subscription_options, current_user=current_user)
 
